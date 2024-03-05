@@ -1,25 +1,15 @@
-import React, { Component, Fragment } from "react";
+import React, { useEffect, Fragment } from "react";
 import Loader from "../layout/loader";
 import PropTypes from "prop-types";
 import Repos from '../repos/Repos'
 import { Link } from "react-router-dom";
 
-class User extends Component {
-  componentDidMount() {
-    this.props.getUser(this.props.match.params.login);
-    this.props.getUserRepos(this.props.match.params.login);
-  }
+const User = ({user, loading, repos, getUser, getUserRepos, match}) => {
+  useEffect(() => {
+    getUser(match.params.login);
+    getUserRepos(match.params.login);
+  }, []);
 
-  static propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object.isRequired,
-    getUser: PropTypes.func.isRequired,
-    getUserRepos: PropTypes.func.isRequired,
-    repos: PropTypes.array.isRequired,
-
-  };
-
-  render() {
     const {
       name,
       avatar_url,
@@ -34,9 +24,7 @@ class User extends Component {
       public_gists,
       company,
       hireable,
-    } = this.props.user;
-
-    const { loading, repos } = this.props;
+    } = user;
 
     if (loading) return <Loader />;
 
@@ -106,7 +94,15 @@ class User extends Component {
         <Repos repos={repos}/>
       </Fragment>
     );
-  }
 }
+
+User.propTypes = {
+    loading: PropTypes.bool,
+    user: PropTypes.object.isRequired,
+    getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+    repos: PropTypes.array.isRequired,
+
+  };
 
 export default User;
